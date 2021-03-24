@@ -52,6 +52,18 @@ class AlunoViewController: UIViewController, ImagePickerPictureSelected {
         self.scrollViewPrincipal.contentSize = CGSize(width: self.scrollViewPrincipal.frame.width, height: self.scrollViewPrincipal.frame.height + self.scrollViewPrincipal.frame.height/2)
     }
     
+    func showMultimidia(_ option: MenuOptions) {
+        let multimidia = UIImagePickerController()
+        multimidia.delegate = imagePicker
+        
+        if option == .camera && UIImagePickerController.isSourceTypeAvailable(.camera) {
+            multimidia.sourceType = .camera
+        } else {
+            multimidia.sourceType = .photoLibrary
+        }
+        present(multimidia, animated: true, completion: nil)
+    }
+    
     //MARK: - Delegate
     func imagePickerPictureSelected(_ photo: UIImage) {
         imageAluno.image = photo
@@ -60,21 +72,10 @@ class AlunoViewController: UIViewController, ImagePickerPictureSelected {
     // MARK: - IBActions
     @IBAction func buttonFoto(_ sender: UIButton) {
         
-        //MARK: Validando se o device tem camera
-        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            
-            //MARK: Criando uma instancia
-            let multimidia = UIImagePickerController()
-            multimidia.delegate = imagePicker
-            
-            //MARK: Tipo de dado - (Camera ou Galeria)
-            multimidia.sourceType = .camera
-            
-            //MARK: Exibindo a camera
-            self.present(multimidia, animated: true, completion: nil)
-        } else {
-            print("Esse device não possui camera 😔")
+        let menu = ImagePicker().menuOption { (options) in
+            self.showMultimidia(options)
         }
+        present(menu, animated: true, completion: nil)
     }
     
     @IBAction func stepperNota(_ sender: UIStepper) {
