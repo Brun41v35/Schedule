@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class AlunoViewController: UIViewController, ImagePickerPictureSelected {
     
@@ -24,6 +25,12 @@ class AlunoViewController: UIViewController, ImagePickerPictureSelected {
     
     //MARK: - variables
     let imagePicker = ImagePicker()
+    
+    //MARK: Criando uma variavel computada para acessar a classe AppDelegate
+    var context: NSManagedObjectContext {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        return appDelegate.persistentContainer.viewContext
+    }
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -76,6 +83,22 @@ class AlunoViewController: UIViewController, ImagePickerPictureSelected {
             self.showMultimidia(options)
         }
         present(menu, animated: true, completion: nil)
+    }
+    
+    @IBAction func saveButtonAction(_ sender: UIButton) {
+        let aluno = Aluno(context: context)
+        aluno.nome = textFieldNome.text
+        aluno.endereco = textFieldEndereco.text
+        aluno.telefone = textFieldTelefone.text
+        aluno.site = textFieldSite.text
+        aluno.nota = (textFieldNota.text! as NSString).doubleValue
+        aluno.foto = imageAluno.image
+        do {
+            try context.save()
+            navigationController?.popViewController(animated: true)
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     @IBAction func stepperNota(_ sender: UIStepper) {
