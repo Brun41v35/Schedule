@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AlunoViewController: UIViewController {
+class AlunoViewController: UIViewController, ImagePickerPictureSelected {
     
     // MARK: - IBOutlets
     @IBOutlet weak var viewImagemAluno: UIView!
@@ -22,9 +22,13 @@ class AlunoViewController: UIViewController {
     @IBOutlet weak var textFieldSite: UITextField!
     @IBOutlet weak var textFieldNota: UITextField!
     
+    //MARK: - variables
+    let imagePicker = ImagePicker()
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        setup()
         self.arredondaView()
         NotificationCenter.default.addObserver(self, selector: #selector(aumentarScrollView(_:)), name: .UIKeyboardWillShow, object: nil)
     }
@@ -40,8 +44,17 @@ class AlunoViewController: UIViewController {
         self.viewImagemAluno.layer.borderColor = UIColor.lightGray.cgColor
     }
     
+    private func setup() {
+        imagePicker.delegate = self
+    }
+    
     @objc func aumentarScrollView(_ notification:Notification) {
         self.scrollViewPrincipal.contentSize = CGSize(width: self.scrollViewPrincipal.frame.width, height: self.scrollViewPrincipal.frame.height + self.scrollViewPrincipal.frame.height/2)
+    }
+    
+    //MARK: - Delegate
+    func imagePickerPictureSelected(_ photo: UIImage) {
+        imageAluno.image = photo
     }
     
     // MARK: - IBActions
@@ -52,6 +65,7 @@ class AlunoViewController: UIViewController {
             
             //MARK: Criando uma instancia
             let multimidia = UIImagePickerController()
+            multimidia.delegate = imagePicker
             
             //MARK: Tipo de dado - (Camera ou Galeria)
             multimidia.sourceType = .camera
